@@ -159,3 +159,6 @@ AUTHENTICATION_BACKENDS = (
 REST_AUTH_REGISTER_SERIALIZERS = {
         'REGISTER_SERIALIZER': 'blog.serializers.RegisterSerializer',
 }
+
+REST_AUTH_SERIALIZERS = {'LOGIN_SERIALIZER': 'blog.serializers.LoginSerializer'}
+
