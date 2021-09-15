@@ -5,21 +5,55 @@ from .models import Post, Comment
 class UserSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = User
-        fields = ['url', 'username', 'email', 'first_name', 'last_name']
+        fields = ['url', 'username']
+
+class UserSerializerDetail(serializers.ModelSerializer):
+    posts = serializers.HyperlinkedRelatedField(
+        view_name='post-detail',
+        many=True,
+        read_only=True
+    )
+    comments = serializers.HyperlinkedRelatedField(
+        view_name='post-comments',
+        many=True,
+        read_only=True
+    )
+    class Meta:
+        model = User
+        fields = ['id', 'username', 'email', 'first_name', 'last_name', 'posts', 'comments']
 
  
-class PostSerializer(serializers.HyperlinkedModelSerializer):
-    user = UserSerializer(read_only=True)
-    class Meta:
-        model = Post
-        fields = ['url','title','user', 'content', 'created']
- 
 class CommentSerializer(serializers.ModelSerializer):
-    user = UserSerializer(read_only=True)
- 
+    #user = UserSerializer(read_only=True)
+    post = serializers.HyperlinkedRelatedField(
+        view_name='post-detail',
+        read_only=True
+    )
+    user = serializers.HyperlinkedRelatedField(
+        view_name='user-detail',
+        read_only=True
+    )
+    post_id = serializers.SerializerMethodField('get_posts')
     class Meta:
         model = Comment
-        fields = [ 'content', 'user', 'created']
+        fields = [ 'content', 'user', 'created', 'post_id', 'post']    
+    
+    def get_posts(self, obj):
+        return obj.post.id
+ 
+class PostSerializer(serializers.HyperlinkedModelSerializer):
+    # comments = serializers.StringRelatedField(many=True)
+    comments = serializers.HyperlinkedRelatedField(
+        view_name='post-comments',
+        many=True,
+        read_only=True
+    )
+    user = UserSerializer(read_only=True)
+    #user = serializers.ReadOnlyField(source = 'user.username')
+    class Meta:
+        model = Post
+        fields = ['url','title','user', 'content', 'created', 'comments']
+
 
 from allauth.account import app_settings as allauth_settings
 from allauth.utils import email_address_exists

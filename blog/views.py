@@ -1,19 +1,19 @@
 from django.shortcuts import render
 from rest_framework import viewsets, permissions, generics
-from .serializers import UserSerializer, PostSerializer, CommentSerializer
+from .serializers import UserSerializer, PostSerializer, CommentSerializer, UserSerializerDetail
 from . import models
 from rest_framework.response import Response 
 from rest_framework.decorators import action, api_view, permission_classes
 
 class UserViewSet(viewsets.ModelViewSet):
     queryset = models.User.objects.all()
-    serializer_class = UserSerializer
+    serializer_class = UserSerializerDetail
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
 
 class UserChangeView(generics.UpdateAPIView):
     queryset = models.User.objects.all()
-    serializer_class = UserSerializer
+    serializer_class = UserSerializerDetail
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
 class PostViewSet(viewsets.ModelViewSet):
