@@ -5,7 +5,7 @@ from .models import Post, Comment
 class UserSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = User
-        fields = ['url', 'username', 'email', 'first_name', 'last_name', 'created']
+        fields = ['url', 'username', 'email', 'first_name', 'last_name']
 
  
 class PostSerializer(serializers.HyperlinkedModelSerializer):
@@ -46,8 +46,8 @@ class RegisterSerializer(serializers.Serializer):
     username = serializers.CharField(required=True, write_only=True)
     first_name = serializers.CharField(required=True, write_only=True)
     last_name = serializers.CharField(required=True, write_only=True)
-    password1 = serializers.CharField(required=True, write_only=True)
-    password2 = serializers.CharField(required=True, write_only=True)
+    password = serializers.CharField(required=True, write_only=True)
+    password_confirmation = serializers.CharField(required=True, write_only=True)
 
     def validate_email(self, email):
         email = get_adapter().clean_email(email)
@@ -61,7 +61,7 @@ class RegisterSerializer(serializers.Serializer):
         return get_adapter().clean_password(password)
 
     def validate(self, data):
-        if data['password1'] != data['password2']:
+        if data['password'] != data['password_confirmation']:
             raise serializers.ValidationError(
                 _("The two password fields didn't match."))
         return data
@@ -71,7 +71,7 @@ class RegisterSerializer(serializers.Serializer):
             'username': self.validated_data.get('username', ''),
             'first_name': self.validated_data.get('first_name', ''),
             'last_name': self.validated_data.get('last_name', ''),
-            'password1': self.validated_data.get('password1', ''),
+            'password': self.validated_data.get('password1', ''),
             'email': self.validated_data.get('email', ''),
         }
 

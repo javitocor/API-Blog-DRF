@@ -8,11 +8,13 @@ from rest_framework.decorators import action, api_view, permission_classes
 class UserViewSet(viewsets.ModelViewSet):
     queryset = models.User.objects.all()
     serializer_class = UserSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
 
 class UserChangeView(generics.UpdateAPIView):
     queryset = models.User.objects.all()
     serializer_class = UserSerializer
+    permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
 class PostViewSet(viewsets.ModelViewSet):
     queryset = models.Post.objects.all()
