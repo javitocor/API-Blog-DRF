@@ -5,24 +5,21 @@ from .models import Post, Comment
 class UserSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = User
-        fields = ['url', 'username', 'email', 'is_staff']
+        fields = ['url', 'username', 'email', 'first_name', 'last_name', 'created']
 
-class UserChangeView(generics.UpdateAPIView):
-    queryset = User.objects.all()
-    serializer_class = UserSerializer
  
 class PostSerializer(serializers.HyperlinkedModelSerializer):
     user = UserSerializer(read_only=True)
     class Meta:
         model = Post
-        fields = ['url','title','user', 'content']
+        fields = ['url','title','user', 'content', 'created']
  
 class CommentSerializer(serializers.ModelSerializer):
     user = UserSerializer(read_only=True)
  
     class Meta:
         model = Comment
-        fields = [ 'content', 'user']
+        fields = [ 'content', 'user', 'created']
 
 from allauth.account import app_settings as allauth_settings
 from allauth.utils import email_address_exists
